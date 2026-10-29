@@ -1,5 +1,4 @@
 
-
 import io
 import platform
 import hashlib
@@ -45,21 +44,51 @@ st.markdown("""
     }
 
     .block-container {
-        padding-top: 2.2rem;
+        padding-top: 2rem;
         padding-bottom: 3rem;
         max-width: 1200px;
     }
 
+    /* Ocultar barra superior negra de Streamlit */
+    header[data-testid="stHeader"] {
+        display: none !important;
+    }
+
+    #MainMenu {
+        display: none !important;
+    }
+
+    footer {
+        display: none !important;
+    }
+
+    /* Columna izquierda en morado oscuro */
     [data-testid="stSidebar"] {
-        background-color: #EFECFA;
-        border-right: 1px solid #E1DDF2;
+        background-color: #302650 !important;
+        border-right: 1px solid #49396F;
     }
 
+    /* Textos blancos para mejorar la legibilidad */
+    [data-testid="stSidebar"] h1,
     [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] h3 {
-        color: #403477 !important;
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] li,
+    [data-testid="stSidebar"] .stMarkdown {
+        color: #FFFFFF !important;
     }
 
+    [data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
+        color: #DDD5F5 !important;
+    }
+
+    [data-testid="stSidebar"] hr {
+        border-color: #594B7C !important;
+    }
+
+    /* Encabezado principal */
     .hero {
         background: linear-gradient(120deg, #403477 0%, #705BC5 100%);
         padding: 35px 36px;
@@ -76,7 +105,7 @@ st.markdown("""
     }
 
     .hero p {
-        color: #F0ECFF;
+        color: #F0ECFF !important;
         font-size: 16px;
         margin: 0;
         line-height: 1.7;
@@ -107,6 +136,7 @@ st.markdown("""
         letter-spacing: 1.2px;
     }
 
+    /* Tarjetas de información */
     .metric-card {
         background: white;
         border: 1px solid #E8E4F4;
@@ -125,6 +155,7 @@ st.markdown("""
         font-size: 23px;
         font-weight: 800;
         color: #403477;
+        overflow-wrap: anywhere;
     }
 
     .answer-card {
@@ -136,15 +167,7 @@ st.markdown("""
         box-shadow: 0 4px 18px rgba(64, 52, 119, 0.05);
     }
 
-    .footer-note {
-        text-align: center;
-        color: #88829D;
-        font-size: 12px;
-        margin-top: 40px;
-        padding: 20px 0;
-        border-top: 1px solid #E7E2F2;
-    }
-
+    /* Botones */
     .stButton > button,
     .stFormSubmitButton > button {
         background: #5946A6;
@@ -163,6 +186,7 @@ st.markdown("""
         border: none;
     }
 
+    /* Cargador de PDF */
     [data-testid="stFileUploader"] {
         background: white;
         border: 1px dashed #BDB3E5;
@@ -170,31 +194,40 @@ st.markdown("""
         padding: 10px;
     }
 
+    /* Campos de texto */
     [data-testid="stTextInput"] input,
     [data-testid="stTextArea"] textarea {
         border-radius: 10px;
     }
 
+    /* Fragmentos desplegables */
     [data-testid="stExpander"] {
         background: white;
         border-radius: 12px;
         border: 1px solid #E8E4F4;
+    }
+
+    .footer-note {
+        text-align: center;
+        color: #88829D;
+        font-size: 12px;
+        margin-top: 40px;
+        padding: 20px 0;
+        border-top: 1px solid #E7E2F2;
     }
 </style>
 """, unsafe_allow_html=True)
 
 
 # ============================================================
-# 3. ENCABEZADO
+# 3. ENCABEZADO E IMAGEN
 # ============================================================
 
-# NOTA PARA CAMBIAR LA IMAGEN:
-# 1. Sube tu nueva imagen a la misma carpeta que Inicio.py
-#    dentro de tu repositorio de GitHub.
-# 2. Cambia "Chat_pdf.png" por el nombre de tu nuevo archivo.
-#    Ejemplo: "mi_logo.png"
-# 3. También puedes usar una ruta como "imagenes/mi_logo.png"
-#    si guardas la imagen dentro de una carpeta llamada imagenes.
+# PARA CAMBIAR LA IMAGEN:
+# Sube tu nueva imagen a GitHub, en la misma carpeta que app.py.
+# Cambia "Chat_pdf.png" por el nombre de tu nueva imagen.
+# Ejemplo: RUTA_IMAGEN = "mi_logo.png"
+# También puedes usar: RUTA_IMAGEN = "imagenes/mi_logo.png"
 
 RUTA_IMAGEN = "Chat_pdf.png"
 
@@ -354,13 +387,11 @@ if not api_key:
     st.info("🔑 Ingresa tu clave API para comenzar el análisis.")
 
 elif pdf is None:
-    st.info("📄 Carga un documento PDF para crear tu espacio de consulta.")
+    st.info("📄 Carga un archivo PDF para crear tu espacio de consulta.")
 
 else:
     try:
-        # Identifica el archivo seleccionado para mostrar sus datos.
         pdf_bytes = pdf.getvalue()
-        identificador = hashlib.sha256(pdf_bytes).hexdigest()
 
         base, n_caracteres, n_fragmentos, n_paginas = (
             crear_base_conocimiento(pdf_bytes, api_key)
@@ -411,6 +442,7 @@ else:
 
         st.markdown("---")
         st.markdown("### 02. ¿Qué quieres descubrir?")
+
         st.write(
             "Formula una pregunta concreta y DocuMind buscará "
             "los fragmentos más relevantes del documento."
@@ -431,7 +463,6 @@ else:
                 use_container_width=True
             )
 
-        # Se conserva la última respuesta al volver a ejecutar la app.
         if consultar:
             if not pregunta.strip():
                 st.warning("Escribe una pregunta antes de continuar.")
@@ -469,9 +500,9 @@ else:
                             ),
                             (
                                 "human",
-                                f"Contexto del documento:\n{contexto}\n\n"
-                                f"Pregunta del usuario:\n{pregunta}"
-                            )
+                                f"Contexto:\n{contexto}\n\n"
+                                f"Pregunta: {pregunta}"
+                            ),
                         ]
 
                         respuesta = llm.invoke(mensajes)
@@ -479,12 +510,13 @@ else:
                     st.markdown("---")
                     st.markdown("### 💡 Resultado del análisis")
 
-                    st.markdown(
-                        '<div class="answer-card">'
-                        '<div class="section-label">'
-                        'RESPUESTA GENERADA</div></div>',
-                        unsafe_allow_html=True
-                    )
+                    st.markdown("""
+                    <div class="answer-card">
+                        <div class="section-label">
+                            RESPUESTA GENERADA
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
 
                     st.markdown(respuesta.content)
 
@@ -494,6 +526,7 @@ else:
                         for i, documento in enumerate(docs, start=1):
                             st.markdown(f"**Fragmento {i}**")
                             st.write(documento.page_content)
+
                             if i < len(docs):
                                 st.divider()
 
@@ -527,4 +560,5 @@ st.markdown("""
     Desarrollado con Streamlit, LangChain y OpenAI
 </div>
 """, unsafe_allow_html=True)
+
 
