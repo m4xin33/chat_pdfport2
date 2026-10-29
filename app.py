@@ -229,7 +229,7 @@ st.markdown("""
 # Ejemplo: RUTA_IMAGEN = "mi_logo.png"
 # También puedes usar: RUTA_IMAGEN = "imagenes/mi_logo.png"
 
-RUTA_IMAGEN = "Chat_pdf.png"
+RUTA_IMAGEN = "5978485.png"
 
 col_logo, col_titulo = st.columns([1, 4])
 
